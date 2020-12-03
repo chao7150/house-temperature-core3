@@ -1,0 +1,42 @@
+{
+  "name": "typescript",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "repository": "git@github.com:chao7150/typescript.git",
+  "author": "Satoru Yokoyama <22640673+chao7150@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn clean && tsc -p ./tsconfig.json",
+    "clean": "rm -rf ./build/*",
+    "commit": "cz",
+    "debug": "yarn build && yarn start",
+    "format": "prettier --write ./src",
+    "lint": "eslint './src/**/*.ts'",
+    "start": "node build/index.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.4",
+    "@typescript-eslint/eslint-plugin": "^3.6.0",
+    "@typescript-eslint/parser": "^3.6.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.4.0",
+    "eslint-config-prettier": "^6.11.0",
+    "husky": "^4.2.5",
+    "jest": "^26.1.0",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.1.1",
+    "typescript": "^3.9.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
