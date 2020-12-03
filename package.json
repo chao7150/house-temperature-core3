@@ -16,7 +16,9 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@prisma/cli": "^2.12.1",
     "@types/jest": "^26.0.4",
+    "@types/node": "^14.14.10",
     "@typescript-eslint/eslint-plugin": "^3.6.0",
     "@typescript-eslint/parser": "^3.6.0",
     "cz-conventional-changelog": "^3.3.0",
@@ -27,7 +29,8 @@
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.1",
-    "typescript": "^3.9.6"
+    "ts-node": "^9.1.0",
+    "typescript": "^4.1.2"
   },
   "husky": {
     "hooks": {
