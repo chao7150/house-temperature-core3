@@ -1,0 +1,6 @@
+{
+  "watch": "build",
+  "env": {
+    "TEMPPOST_PASSWORD": "test"
+  }
+}
