@@ -1,13 +1,6 @@
 version: "3.8"
 
 services:
-  web:
-    build: .
-    restart: always
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
   db:
     image: postgres
     restart: always
