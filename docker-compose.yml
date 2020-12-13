@@ -8,6 +8,8 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    environment:
+      DATABASE_URL: "postgresql://prisma:mysecretpassword@db:5432/weather?schema=public"
   db:
     image: postgres
     restart: always
