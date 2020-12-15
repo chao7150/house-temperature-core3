@@ -45,6 +45,6 @@ app.post("/api/temperature", async (req, res) => {
   res.status(200).json(result);
 });
 
-app.post("/test", (req, res) => {
-  res.send(req.body);
+app.get("/status", (req, res) => {
+  res.json({ status: "OK" });
 });

@@ -1,4 +1,3 @@
-import { doesNotMatch } from "assert";
 import request from "supertest";
 import { app, prisma } from "../app";
 
@@ -39,5 +38,13 @@ describe("test post", () => {
       })
       .send(body)
       .then((response) => expect(response.status).toBe(401));
+  });
+});
+
+describe("healthcheck", () => {
+  it("returns OK", () => {
+    return request(app)
+      .get("/status")
+      .then((response) => expect(response.status).toBe(200));
   });
 });
