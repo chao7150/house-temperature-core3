@@ -45,6 +45,39 @@ app.post("/api/temperature", async (req, res) => {
   res.status(200).json(result);
 });
 
+/**
+ * queryがstringならパースしそれ以外ならデフォルト値にフォールバックする
+ * - デフォルト値
+ *   - start: 今日の0時0分
+ *   - end: 明日の0時0分
+ */
+const parseStartEnd = ({
+  query,
+  now,
+}: {
+  query: express.Request["query"];
+  now: Date;
+}): { start: Date; end: Date } => {
+  const beginningOfToday = new Date(now.setHours(0, 0, 0, 0));
+  const start =
+    typeof query.start === "string" ? new Date(query.start) : beginningOfToday;
+  const end =
+    typeof query.end === "string"
+      ? new Date(query.end)
+      : new Date(beginningOfToday.valueOf() + 60 * 60 * 24 * 1000);
+  return { start, end };
+};
+
+app.get("/api/temperature", async (req, res) => {
+  const now = new Date();
+  const { start, end } = parseStartEnd({ query: req.query, now });
+  const data = await prisma.weather.findMany({
+    where: { datetime: { gte: start, lt: end } },
+    orderBy: { datetime: "asc" },
+  });
+  res.json(data);
+});
+
 app.get("/status", (req, res) => {
   res.json({ status: "OK" });
 });

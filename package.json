@@ -13,7 +13,7 @@
     "format": "prettier --write ./src",
     "lint": "eslint './src/**/*.ts'",
     "start": "node -r dotenv/config build/index.js",
-    "start:db": "docker-compose -f docker-compose-local.yml up",
+    "start:db": "docker-compose -f docker-compose-local.yml up -d",
     "test": "jest",
     "test:post": "bash scripts/post.sh",
     "test:prisma:studio": "DATABASE_URL='postgresql://prisma:mysecretpassword@localhost:5432/weather?schema=public' prisma studio"
