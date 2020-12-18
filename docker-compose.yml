@@ -8,14 +8,19 @@ services:
       - "3000:3000"
     env_file:
       - .env
-    environment:
-      DATABASE_URL: "postgresql://prisma:mysecretpassword@db:5432/weather?schema=public"
   db:
     image: postgres
     restart: always
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: prisma
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: weather
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  db_data:
+
+networks:
+  common_link:
+    external: true
