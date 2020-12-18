@@ -22,5 +22,6 @@ volumes:
   db_data:
 
 networks:
-  common_link:
-    external: true
+  default:
+    external:
+      name: common_link
