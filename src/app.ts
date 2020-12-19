@@ -1,8 +1,11 @@
 import express from "express";
 import { PrismaClient, Weather } from "@prisma/client";
+import cors from "cors";
 
 export const prisma = new PrismaClient();
 export const app = express();
+
+app.use(cors());
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
