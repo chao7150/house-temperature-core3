@@ -8,6 +8,9 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    networks:
+      - common_link
+      - default
   db:
     image: postgres
     restart: always
@@ -15,6 +18,8 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - default
     env_file:
       - .env
 
@@ -22,6 +27,5 @@ volumes:
   db_data:
 
 networks:
-  default:
-    external:
-      name: common_link
+  common_link:
+    external: true
