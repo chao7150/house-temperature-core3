@@ -10,7 +10,7 @@ services:
       - .env
     networks:
       - common_link
-      - default
+      - house_temperature_core_internal_link
   db:
     image: postgres
     restart: always
@@ -19,7 +19,9 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
-      - default
+      house_temperature_core_internal_link:
+        aliases: 
+          - house_temperature_core_db
     env_file:
       - .env
 
@@ -29,3 +31,5 @@ volumes:
 networks:
   common_link:
     external: true
+  house_temperature_core_internal_link:
+    internal: true
