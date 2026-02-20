@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +36,9 @@ public class TemperatureController {
                             "detail", "Request body must contain datetime, temperature, humidity and pressure."));
         }
 
-        LocalDateTime datetime = LocalDateTime.ofInstant(
+        OffsetDateTime datetime = OffsetDateTime.ofInstant(
                 java.time.Instant.ofEpochMilli(((Number) body.get("datetime")).longValue()),
-                java.time.ZoneOffset.UTC);
+                ZoneOffset.UTC);
 
         Weather weather = new Weather(
                 datetime,
@@ -54,18 +55,19 @@ public class TemperatureController {
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end) {
 
-        LocalDateTime startDateTime = start != null ? parseDateTime(start) : temperatureService.getDefaultStart();
-        LocalDateTime endDateTime = end != null ? parseDateTime(end) : temperatureService.getDefaultEnd();
+        OffsetDateTime startDateTime = start != null ? parseDateTime(start) : temperatureService.getDefaultStart();
+        OffsetDateTime endDateTime = end != null ? parseDateTime(end) : temperatureService.getDefaultEnd();
 
         List<Weather> data = temperatureService.getWeatherData(startDateTime, endDateTime);
         return ResponseEntity.ok(data);
     }
 
-    private LocalDateTime parseDateTime(String dt) {
+    private OffsetDateTime parseDateTime(String dt) {
         try {
-            return LocalDateTime.parse(dt);
+            return OffsetDateTime.parse(dt);
         } catch (DateTimeParseException e) {
-            return OffsetDateTime.parse(dt).toLocalDateTime();
+            // Assume UTC if no offset is provided
+            return LocalDateTime.parse(dt).atOffset(ZoneOffset.UTC);
         }
     }
 

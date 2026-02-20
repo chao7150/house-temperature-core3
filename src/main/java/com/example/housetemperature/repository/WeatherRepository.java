@@ -3,10 +3,10 @@ package com.example.housetemperature.repository;
 import com.example.housetemperature.entity.Weather;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
-public interface WeatherRepository extends JpaRepository<Weather, LocalDateTime> {
-    List<Weather> findByDatetimeBetween(LocalDateTime start, LocalDateTime end);
+public interface WeatherRepository extends JpaRepository<Weather, OffsetDateTime> {
+    List<Weather> findByDatetimeBetween(OffsetDateTime start, OffsetDateTime end);
 }
