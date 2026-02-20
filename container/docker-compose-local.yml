@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: container/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://db:5432/weather
+      - POSTGRES_USER=prisma
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=weather
+      - TEMPPOST_PASSWORD=test
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=prisma
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=weather
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

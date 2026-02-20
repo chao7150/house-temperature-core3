@@ -4,18 +4,20 @@
 
 ```bash
 cp .env.sample .env
-yarn
-yarn prisma generate
-yarn start:db
-psql -h localhost -U prisma -d weather -f schema.sql
-yarn debug
+# DBを起動
+docker compose up -d db
+# アプリをローカルで起動 (Mavenが必要)
+mvn spring-boot:run
 ```
 
 ## deployment
 
+1. リモートサーバー (`sakura`) にログイン
+2. `~/src/house-temperature-core3` に移動
+3. `.env` の修正 (特に JDBC URL)
+4. ビルドと起動
+
 ```bash
-cp .env.sample .env
-docker-compose up -d db
-psql -h localhost -U prisma weather -f schema.sql
-docker-compose up -d web
+git pull origin master
+docker compose up -d --build
 ```
