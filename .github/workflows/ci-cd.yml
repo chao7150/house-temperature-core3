@@ -18,18 +18,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Run tests
-        run: mvn test
+        run: cargo test
 
       - name: Build
-        run: mvn package -DskipTests
+        run: cargo build --release
 
   docker-build-and-push:
     name: Build and Push to ECR

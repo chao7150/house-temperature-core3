@@ -1,12 +1,14 @@
-FROM eclipse-temurin:17-jdk-alpine AS build
+# Build stage
+FROM rust:alpine AS build
 WORKDIR /app
-COPY pom.xml .
-COPY src src
-RUN apk add --no-cache maven
-RUN mvn package -DskipTests
+# Install musl-dev to build static binaries
+RUN apk add --no-cache musl-dev
+COPY . .
+RUN cargo build --release
 
-FROM eclipse-temurin:17-jre-alpine
+# Runtime stage
+FROM alpine:3.20
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/release/house-temperature-core /app/house-temperature-core
 EXPOSE 3000
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["/app/house-temperature-core"]

@@ -4,8 +4,7 @@
 
 - **名称**: house-temperature-core
 - **用途**: 家の温度・湿度・気圧を測定・記録する REST API
-- **現 Tech Stack**: Node.js + Express + Prisma + PostgreSQL
-- **移植先**: Spring Boot + Spring Data JPA + PostgreSQL
+- **Tech Stack**: Rust + Axum + SQLx + PostgreSQL
 
 ## 2. 機能仕様
 
@@ -21,7 +20,6 @@
 
 - **認証**: `X-Temppost-Password` ヘッダー（環境変数`TEMPPOST_PASSWORD`と照合）
 - **Request Body**:
-
 ```json
 {
   "datetime": 1708400000000,
@@ -30,31 +28,44 @@
   "pressure": 1022.5
 }
 ```
-
 - **Response**: 登録されたデータを JSON で返す
-- **エラー**: 400 (不正なボディ), 401 (認証エラー)
+- **エラー**:
+  - **401 (Unauthorized)**:
+    ```json
+    { "title": "incorrect password", "detail": "Password is incorrect." }
+    ```
+  - **400 (Bad Request)**:
+    ```json
+    { "title": "request body is invalid", "detail": "Request body must contain datetime, temperature, humidity and pressure." }
+    ```
 
 ### 2.3 GET `/api/temperature`
 
 - **Query Parameters** (すべて任意):
-  - `start`: 取得開始日時（ISO 8601 形式、デフォルト: 本日 0 時 0 分）
-  - `end`: 取得終了日時（デフォルト: 明日 0 時 0 分）
-- **Response**: `datetime`升順で配列 반환
+  - `start`: 取得開始日時（ISO 8601 形式。オフセットがない場合は UTC とみなす。デフォルト: 本日 0 時 0 分 UTC）
+  - `end`: 取得終了日時（ISO 8601 形式。デフォルト: `start` の 24 時間後）
+- **Response**: `datetime` 昇順で配列を返す
 
 ### 2.4 GET `/status`
 
 - **Response**: `{ "status": "OK" }`
 
+### 2.5 CORS 設定
+
+- すべてのオリジン (`*`) を許可
+- 許可メソッド: `GET`, `POST`, `OPTIONS`
+- 許可ヘッダー: すべて (`*`)
+
 ## 3. データベース設計
 
 ### Table: `Weather`
 
-| Column      | Type         | Constraints |
-| ----------- | ------------ | ----------- |
-| datetime    | TIMESTAMP    | PRIMARY KEY |
-| temperature | REAL (Float) | NOT NULL    |
-| humidity    | REAL (Float) | NOT NULL    |
-| pressure    | REAL (Float) | NOT NULL    |
+| Column      | Type                     | Constraints |
+| ----------- | ------------------------ | ----------- |
+| datetime    | TIMESTAMP WITH TIME ZONE | PRIMARY KEY |
+| temperature | DOUBLE PRECISION         | NOT NULL    |
+| humidity    | DOUBLE PRECISION         | NOT NULL    |
+| pressure    | DOUBLE PRECISION         | NOT NULL    |
 
 ## 4. 環境変数
 
@@ -64,26 +75,7 @@
 | TEMPPOST_PASSWORD | POST API 用パスワード             | `test`                                          |
 | SERVER_PORT       | サーバーポート（デフォルト 3000） | `3000`                                          |
 
-## 5. プロジェクト構成（Spring Boot）
+## 5. 実装に関する技術詳細
 
-```
-src/main/java/com/example/houseTemperature/
-├── HouseTemperatureApplication.java
-├── controller/
-│   └── TemperatureController.java
-├── entity/
-│   └── Weather.java
-├── repository/
-│   └── WeatherRepository.java
-├── service/
-│   └── TemperatureService.java
-└── config/
-    └── CorsConfig.java
-```
-
-## 6. テスト仕様
-
-- POST 成功時のステータスコード確認
-- パスワード誤り時に 401 返す
-- 期間指定でのデータ取得確認
-- ヘルスチェック確認
+- **タイムゾーン**: すべて内部処理および時刻計算は UTC を使用する。
+- **データ型**: 数値は倍精度浮動小数点数 (`f64`) を使用。
