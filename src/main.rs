@@ -59,7 +59,7 @@ async fn post_temperature(
     // デバッグログ追加
     println!("Payload received: {:?}", payload);
 
-    let datetime_ms = payload["datetime"].as_i64();
+    let datetime_ms = payload["datetime"].as_i64().or(payload["datetime"].as_f64().map(|f| f as i64));
     let temp = payload["temperature"].as_f64().or(payload["temperature"].as_str().and_then(|s| s.parse().ok()));
     let hum = payload["humidity"].as_f64().or(payload["humidity"].as_str().and_then(|s| s.parse().ok()));
     let press = payload["pressure"].as_f64().or(payload["pressure"].as_str().and_then(|s| s.parse().ok()));
