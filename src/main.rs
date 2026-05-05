@@ -56,12 +56,16 @@ async fn post_temperature(
         }))).into_response();
     }
 
+    // デバッグログ追加
+    println!("Payload received: {:?}", payload);
+
     let datetime_ms = payload["datetime"].as_i64();
-    let temp = payload["temperature"].as_f64();
-    let hum = payload["humidity"].as_f64();
-    let press = payload["pressure"].as_f64();
+    let temp = payload["temperature"].as_f64().or(payload["temperature"].as_str().and_then(|s| s.parse().ok()));
+    let hum = payload["humidity"].as_f64().or(payload["humidity"].as_str().and_then(|s| s.parse().ok()));
+    let press = payload["pressure"].as_f64().or(payload["pressure"].as_str().and_then(|s| s.parse().ok()));
 
     if datetime_ms.is_none() || temp.is_none() || hum.is_none() || press.is_none() {
+        println!("Parsing failed: datetime={:?}, temp={:?}, hum={:?}, press={:?}", datetime_ms, temp, hum, press);
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({
             "title": "request body is invalid",
             "detail": "Request body must contain datetime, temperature, humidity and pressure."
